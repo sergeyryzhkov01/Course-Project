@@ -14,3 +14,13 @@
 <img width="503" height="253" alt="Снимок экрана 2025-12-28 в 00 51 25" src="https://github.com/user-attachments/assets/4d4d142e-87a5-4aae-9075-9a0737d06800" />
 
 <img width="978" height="469" alt="image" src="https://github.com/user-attachments/assets/5ff2d5cb-a0ec-4950-9d72-6c5af869e644" />
+
+## Структура проекта
+```
+                  ┌──Course Project.vcxproj
+┌──Course Project─┼──Course Project.vcxproj.filters
+├──.gitattributes └──main.c
+├──.gitignore
+├──Course Project.sln
+└──README.md
+```
