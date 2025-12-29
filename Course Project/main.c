@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <math.h>
 #include <locale.h>
 
@@ -10,6 +10,7 @@ double derivative(double x);
 double find_min_x(double a, double b, int steps);
 double find_max_x(double a, double b, int steps);
 void table_of_values(double a, double b, double step);
+void save_table_to_file(double a, double b, double step, const char* filename);
 double find_x(double a, double b, double Y);
 double input_double(const char* msg);
 
@@ -18,7 +19,7 @@ int main() {
     setlocale(LC_CTYPE, "RUS");
 
     int choice;
-    
+
     printf("Программа анализа функций\n");
     printf("Выполнил: Рыжков Сергей Максимович бИЦ-252\n\n");
 
@@ -27,10 +28,11 @@ int main() {
     while (1) {
         printf("\nВыберите операцию:\n");
         printf("1 - Значение f(x)\n");
-        printf("2 - Таблица значений\n");
+        printf("2 - Таблица значений (на экран)\n");
         printf("3 - Минимум и максимум\n");
         printf("4 - Поиск x, где f(x) = Y\n");
         printf("5 - Производная f'(x)\n");
+        printf("6 - Сохранить таблицу значений в файл\n");
         printf("0 - Выход\n> ");
 
         if (scanf("%d", &choice) != 1) {
@@ -43,6 +45,7 @@ int main() {
             break;
 
         double x, a, b, step, Y;
+        char filename[100];
 
         switch (choice) {
 
@@ -89,6 +92,19 @@ int main() {
         case 5:
             x = input_double("Введите x: ");
             printf("f'(%.6lf) = %.8lf\n", x, derivative(x));
+            break;
+
+        case 6: 
+            a = input_double("Введите a: ");
+            b = input_double("Введите b: ");
+            step = input_double("Введите шаг: ");
+            if (step <= 0 || a >= b) {
+                printf("Ошибка: неверный интервал.\n");
+                break;
+            }
+            printf("Введите имя файла (например, result.txt): ");
+            scanf("%s", filename);
+            save_table_to_file(a, b, step, filename);
             break;
 
         default:
@@ -165,6 +181,30 @@ void table_of_values(double a, double b, double step) {
         printf("| %10.4lf | %25.8lf |\n", x, f(x));
 
     printf("=============================================\n\n");
+}
+
+void save_table_to_file(double a, double b, double step, const char* filename) {
+    FILE* fp = fopen(filename, "w");
+
+    if (fp == NULL) {
+        printf("Ошибка: не удалось открыть файл для записи.\n");
+        return;
+    }
+
+    fprintf(fp, "Таблица значений функции\n");
+    fprintf(fp, "Интервал [%.2lf; %.2lf], шаг %.2lf\n\n", a, b, step);
+    fprintf(fp, "=============================================\n");
+    fprintf(fp, "|     x      |         f(x)                 |\n");
+    fprintf(fp, "=============================================\n");
+
+    for (double x = a; x <= b + step / 2; x += step) {
+        fprintf(fp, "| %10.4lf | %25.8lf |\n", x, f(x));
+    }
+
+    fprintf(fp, "=============================================\n");
+
+    fclose(fp); 
+    printf("Результаты успешно сохранены в файл: %s\n", filename);
 }
 
 double find_x(double a, double b, double Y) {
